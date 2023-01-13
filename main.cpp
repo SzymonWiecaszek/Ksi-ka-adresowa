@@ -23,20 +23,19 @@ string wczytajLinie()
 void dodajNowyKontakt (vector <Kontakt> &kontakty)
 {
     Kontakt kontakt;
+    int ostatnieID = kontakty.back().id;
 
     cout << "Podaj imie nowego kontaktu: ";
-    kontakt.imie=wczytajLinie();
+    kontakt.imie = wczytajLinie();
     cout << "Podaj nazwisko nowego kontaktu: ";
-    kontakt.nazwisko=wczytajLinie();
+    kontakt.nazwisko = wczytajLinie();
     cout << "Podaj numer telefonu nowego kontaktu: ";
-    kontakt.numerTelefonu=wczytajLinie();
+    kontakt.numerTelefonu = wczytajLinie();
     cout << "Podaj adres e-mail nowego kontaktu: ";
-    kontakt.adresEmail=wczytajLinie();
+    kontakt.adresEmail = wczytajLinie();
     cout << "Podaj pelny adres nowego kontaktu (i calosc zaakceptuj klawiszem Enter): ";
-    kontakt.adres=wczytajLinie();
-    kontakty.back();
-    int id = kontakt.id + 1;
-    kontakt.id = id;
+    kontakt.adres = wczytajLinie();
+    kontakt.id = ostatnieID + 1;
     kontakty.push_back(kontakt);
 
     fstream plik;
@@ -97,22 +96,22 @@ void wczytajKontaktyZPliku (vector <Kontakt> &kontakty)
                 switch (i)
                 {
                 case 0:
-                    kontakt.id=atoi(pomocniczy[i].c_str());
+                    kontakt.id = atoi(pomocniczy[i].c_str());
                     break;
                 case 1:
-                    kontakt.imie=pomocniczy[i];
+                    kontakt.imie = pomocniczy[i];
                     break;
                 case 2:
-                    kontakt.nazwisko=pomocniczy[i];
+                    kontakt.nazwisko = pomocniczy[i];
                     break;
                 case 3:
-                    kontakt.numerTelefonu=pomocniczy[i];
+                    kontakt.numerTelefonu = pomocniczy[i];
                     break;
                 case 4:
-                    kontakt.adresEmail=pomocniczy[i];
+                    kontakt.adresEmail = pomocniczy[i];
                     break;
                 case 5:
-                    kontakt.adres=pomocniczy[i];
+                    kontakt.adres = pomocniczy[i];
                     break;
                 }
             }
