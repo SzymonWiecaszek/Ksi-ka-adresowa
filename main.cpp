@@ -20,24 +20,8 @@ string wczytajLinie()
     return linia;
 }
 
-void dodajNowyKontakt (vector <Kontakt> &kontakty)
+void dopiszKontaktDoPliku (Kontakt kontakt)
 {
-    Kontakt kontakt;
-    int ostatnieID = kontakty.back().id;
-
-    cout << "Podaj imie nowego kontaktu: ";
-    kontakt.imie = wczytajLinie();
-    cout << "Podaj nazwisko nowego kontaktu: ";
-    kontakt.nazwisko = wczytajLinie();
-    cout << "Podaj numer telefonu nowego kontaktu: ";
-    kontakt.numerTelefonu = wczytajLinie();
-    cout << "Podaj adres e-mail nowego kontaktu: ";
-    kontakt.adresEmail = wczytajLinie();
-    cout << "Podaj pelny adres nowego kontaktu (i calosc zaakceptuj klawiszem Enter): ";
-    kontakt.adres = wczytajLinie();
-    kontakt.id = ostatnieID + 1;
-    kontakty.push_back(kontakt);
-
     fstream plik;
     plik.open("KsiazkaAdresowa.txt", ios::out | ios::app);
 
@@ -51,15 +35,48 @@ void dodajNowyKontakt (vector <Kontakt> &kontakty)
         plik<<kontakt.adres<<"|";
         plik<<endl;
         plik.close();
+
+        cout << endl << "Zapisano nowy kontakt" << endl;
+        system("pause");
     }
     else
     {
         cout << "Nie udalo sie otworzyc pliku i zapisac do niego danych." << endl;
         system("pause");
     }
+}
 
-    cout << "Zapisano nowy kontakt" << endl;
-    Sleep(1000);
+void dodajNowyKontakt (vector <Kontakt> &kontakty)
+{
+    Kontakt kontakt;
+
+    if (kontakty.empty() == true)
+    {
+        kontakt.id = 1;
+    }
+    else
+    {
+        kontakt.id = kontakty.back().id + 1;
+    }
+
+    cout << "Podaj imie nowego kontaktu: ";
+    kontakt.imie = wczytajLinie();
+
+    cout << "Podaj nazwisko nowego kontaktu: ";
+    kontakt.nazwisko = wczytajLinie();
+
+    cout << "Podaj numer telefonu nowego kontaktu: ";
+    kontakt.numerTelefonu = wczytajLinie();
+
+    cout << "Podaj adres e-mail nowego kontaktu: ";
+    kontakt.adresEmail = wczytajLinie();
+
+    cout << "Podaj pelny adres nowego kontaktu (i calosc zaakceptuj klawiszem Enter): ";
+    kontakt.adres = wczytajLinie();
+
+    kontakty.push_back(kontakt);
+
+    dopiszKontaktDoPliku(kontakt);
 }
 
 void wczytajKontaktyZPliku (vector <Kontakt> &kontakty)
@@ -76,7 +93,7 @@ void wczytajKontaktyZPliku (vector <Kontakt> &kontakty)
     if (!plik.good())
     {
         cout << "Brak pliku ksiazka adresowa! Zostanie on utworzony automatycznie przy dodaniu pierwszego kontaktu."<<endl;
-        Sleep(1500);
+        system("pause");
     }
     else
     {
@@ -126,7 +143,6 @@ void wyswietlWszystkieKontatky (vector <Kontakt> &kontakty)
     if (kontakty.size() == 0)
     {
         cout << "Brak kontaktow w ksiazce adresowej! Dodaj kontakt przed wyswietleniem" << endl;
-        Sleep(1500);
     }
     else
     {
@@ -153,7 +169,6 @@ void wyszukajPoImieniu (vector <Kontakt> &kontakty)
     if (kontakty.size() == 0)
     {
         cout << "Brak kontaktow w ksiazce adresowej! Dodaj kontakt przed uzyciem tej funkcji" << endl;
-        Sleep(1500);
     }
     else
     {
@@ -179,7 +194,6 @@ void wyszukajPoImieniu (vector <Kontakt> &kontakty)
         {
             cout << "Nie znaleziono kontaktow o takim imieniu w ksiazce adresowej." << endl;
             cout << "Sprobuj ponownie, pamietajac, ze wielkosc liter ma znaczenie." << endl;
-            Sleep(2500);
         }
         system("pause");
     }
@@ -194,7 +208,6 @@ void wyszukajPoNazwisku (vector <Kontakt> &kontakty)
     if (kontakty.size() == 0)
     {
         cout << "Brak kontaktow w ksiazce adresowej! Dodaj kontakt przed uzyciem tej funkcji" << endl;
-        Sleep(1500);
     }
     else
     {
@@ -220,7 +233,6 @@ void wyszukajPoNazwisku (vector <Kontakt> &kontakty)
         {
             cout << "Nie znaleziono kontaktow o takim nazwisku w ksiazce adresowej." << endl;
             cout << "Sprobuj ponownie, pamietajac, ze wielkosc liter ma znaczenie." << endl;
-            Sleep(2500);
         }
     }
     system("pause");
@@ -257,7 +269,6 @@ void usunKontakt (vector <Kontakt> &kontakty)
     if (kontakty.size() == 0)
     {
         cout << "Brak kontaktow w ksiazce adresowej! Dodaj kontakt przed uzyciem tej funkcji" << endl;
-        Sleep(1500);
     }
     else
     {
@@ -276,13 +287,11 @@ void usunKontakt (vector <Kontakt> &kontakty)
                 if (potwierdzenie == 't' || potwierdzenie == 'T')
                 {
                     kontakty.erase(itr);
-                    cout<<"Usunieto kontakt";
-                    Sleep (1500);
+                    cout<< "Usunieto kontakt" <<endl;
                 }
                 else
                 {
                     cout << "Kontakt nie zostal usuniety. Nie potwierdzono zadania" << endl;
-                    Sleep (1500);
                 }
             }
         }
@@ -290,12 +299,9 @@ void usunKontakt (vector <Kontakt> &kontakty)
         if (sprawdzCzyWyszukanoKontakt == false)
         {
             cout << "Kontakt o podanym ID nie istnieje. Wprowadz prawidlowe ID." << endl;
-            Sleep(1500);
         }
     }
-
     zapisWektoraDoPliku(kontakty);
-    cout << endl;
     system("pause");
 }
 
@@ -305,62 +311,64 @@ void edytujKontakt (vector <Kontakt> &kontakty)
     int idKontaktuDoEdycji;
     vector <Kontakt>::iterator itr;
 
-    cout << "Podaj id kontaktu, ktory chcesz edytowac ";
-    cin >> idKontaktuDoEdycji;
-
-    for (itr = kontakty.begin(); itr<=kontakty.end(); itr++)
+    if (kontakty.size() == 0)
     {
-        if (itr -> id == idKontaktuDoEdycji)
+        cout << "Brak kontaktow w ksiazce adresowej! Dodaj kontakt przed uzyciem tej funkcji" << endl;
+    }
+    else
+    {
+        cout << "Podaj id kontaktu, ktory chcesz edytowac ";
+        cin >> idKontaktuDoEdycji;
+
+        for (itr = kontakty.begin(); itr<=kontakty.end(); itr++)
         {
-            sprawdzCzyWyszukanoKontakt = true;
-            char wybor;
-
-            system("cls");
-            cout << "1. Edytuj imie" << endl;
-            cout << "2. Edytuj nazwisko" << endl;
-            cout << "3. Edytuj numer telefonu" << endl;
-            cout << "4. Edytuj adres e-mail" << endl;
-            cout << "5. Edytuj adres" << endl;
-            cout << "6. Powrot do menu glownego" << endl;
-            cout << "Twoj wybor: ";
-
-            cin >> wybor;
-
-            switch (wybor)
+            if (itr -> id == idKontaktuDoEdycji)
             {
-            case '1':
-                cout << "Wprowadz nowe imie: ";
-                itr -> imie = wczytajLinie();
-                cout<<"Imie zostalo zmienione";
-                Sleep (1000);
-                break;
-            case '2':
-                cout << "Wprowadz nowe nazwisko: ";
-                itr -> nazwisko = wczytajLinie();
-                cout<<"Nazwisko zostalo zmienione";
-                Sleep (1000);
-                break;
-            case '3':
-                cout << "Wprowadz nowy numer telefonu: ";
-                itr -> numerTelefonu = wczytajLinie();
-                cout<<"Numer telefonu zostal zmieniony";
-                Sleep (1000);
-                break;
-            case '4':
-                cout << "Wprowadz nowy adres e-mail: ";
-                itr -> adresEmail = wczytajLinie();
-                cout<<"Adres e-mail zostal zmieniony";
-                Sleep (1000);
-                break;
-            case '5':
-                cout << "Wprowadz nowy adres: ";
-                itr -> adres = wczytajLinie();
-                cout<<"Adres zostal zmieniony";
-                Sleep (1000);
-                break;
-            case '6':
+                sprawdzCzyWyszukanoKontakt = true;
+                char wybor;
+
                 system("cls");
-                break;
+                cout << "1. Edytuj imie" << endl;
+                cout << "2. Edytuj nazwisko" << endl;
+                cout << "3. Edytuj numer telefonu" << endl;
+                cout << "4. Edytuj adres e-mail" << endl;
+                cout << "5. Edytuj adres" << endl;
+                cout << "6. Powrot do menu glownego" << endl;
+                cout << "Twoj wybor: ";
+
+                cin >> wybor;
+
+                switch (wybor)
+                {
+                case '1':
+                    cout << "Wprowadz nowe imie: " << endl;
+                    itr -> imie = wczytajLinie();
+                    cout<<"Imie zostalo zmienione" << endl;
+                    break;
+                case '2':
+                    cout << "Wprowadz nowe nazwisko: " << endl;
+                    itr -> nazwisko = wczytajLinie();
+                    cout<<"Nazwisko zostalo zmienione" << endl;
+                    break;
+                case '3':
+                    cout << "Wprowadz nowy numer telefonu: " << endl;
+                    itr -> numerTelefonu = wczytajLinie();
+                    cout<<"Numer telefonu zostal zmieniony" << endl;
+                    break;
+                case '4':
+                    cout << "Wprowadz nowy adres e-mail: " << endl;
+                    itr -> adresEmail = wczytajLinie();
+                    cout << "Adres e-mail zostal zmieniony" << endl;
+                    break;
+                case '5':
+                    cout << "Wprowadz nowy adres: " << endl;
+                    itr -> adres = wczytajLinie();
+                    cout << "Adres zostal zmieniony" << endl;
+                    break;
+                case '6':
+                    system("cls");
+                    break;
+                }
             }
         }
     }
@@ -368,9 +376,9 @@ void edytujKontakt (vector <Kontakt> &kontakty)
     if (sprawdzCzyWyszukanoKontakt == false)
     {
         cout << "Kontakt o podanym ID nie istnieje. Wprowadz prawidlowe ID." << endl;
-        Sleep(1500);
     }
     zapisWektoraDoPliku(kontakty);
+    system("pause");
 }
 
 int main()
@@ -380,7 +388,7 @@ int main()
 
     wczytajKontaktyZPliku(kontakty);
 
-    while(1)
+    while(true)
     {
         system("cls");
         cout << "KSIAZKA ADRESOWA" << endl;
